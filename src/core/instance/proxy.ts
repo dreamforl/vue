@@ -37,9 +37,14 @@ if (__DEV__) {
   const hasProxy = typeof Proxy !== 'undefined' && isNative(Proxy)
 
   if (hasProxy) {
+    // 内置的修饰符，不能被设置为按键的别名
     const isBuiltInModifier = makeMap(
       'stop,prevent,self,ctrl,shift,alt,meta,exact'
     )
+    /**
+     * 对于难以记住的按键设置别名
+     * eg: Vue.config.keyCodes.f1 = 112
+     */
     config.keyCodes = new Proxy(config.keyCodes, {
       set(target, key: string, value) {
         if (isBuiltInModifier(key)) {
@@ -55,6 +60,11 @@ if (__DEV__) {
     })
   }
 
+  /**
+   * 模板中的变量
+   * 1 是全局的原生方法
+   * 2 如果不是的话，需要在data中定义，而且如果是以_开头，需要添加&data._name前缀（以&或者_开头的不会被代理）
+   */
   const hasHandler = {
     has(target, key) {
       const has = key in target

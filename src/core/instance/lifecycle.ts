@@ -40,6 +40,7 @@ export function initLifecycle(vm: Component) {
     while (parent.$options.abstract && parent.$parent) {
       parent = parent.$parent
     }
+    // 将当前this添加到父组件的$children中
     parent.$children.push(vm)
   }
 

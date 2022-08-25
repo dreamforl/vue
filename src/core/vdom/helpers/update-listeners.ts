@@ -72,8 +72,10 @@ export function updateListeners(
   for (name in on) {
     cur = on[name]
     old = oldOn[name]
+    // 解析出 name、once、capture、passive的值
     event = normalizeEvent(name)
     if (isUndef(cur)) {
+    // 绑定的事件未定义，就输出去定义
       __DEV__ &&
         warn(
           `Invalid handler for event "${event.name}": got ` + String(cur),

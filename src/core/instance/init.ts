@@ -16,30 +16,31 @@ let uid = 0
 export function initMixin(Vue: typeof Component) {
   Vue.prototype._init = function (options?: Record<string, any>) {
     const vm: Component = this
-    // a uid
+    // 每个实例一个uid，递增的，从0开始
     vm._uid = uid++
 
     let startTag, endTag
-    /* istanbul ignore if */
+    /**
+    * 在性能缓冲区中使用给定名称添加一个时间戳
+    * 后续可以通过performance.getEntriesByType("mark");获取所有的时间戳
+    */
     if (__DEV__ && config.performance && mark) {
       startTag = `vue-perf-start:${vm._uid}`
       endTag = `vue-perf-end:${vm._uid}`
       mark(startTag)
     }
 
-    // a flag to mark this as a Vue instance without having to do instanceof
-    // check
+    // 不用执行instanceof就可以知道是不是vue的标记
     vm._isVue = true
-    // avoid instances from being observed
+    // 避免被观察到的实例
     vm.__v_skip = true
-    // effect scope
-    vm._scope = new EffectScope(true /* detached */)
+    // 独立作用域
+    vm._scope = new EffectScope(true)
     vm._scope._vm = true
     // merge options
     if (options && options._isComponent) {
-      // optimize internal component instantiation
-      // since dynamic options merging is pretty slow, and none of the
-      // internal component options needs special treatment.
+      // 优化内部组件实例化
+      // 因为动态选项合并非常慢，而且内部组件选项需要特殊处理。
       initInternalComponent(vm, options as any)
     } else {
       vm.$options = mergeOptions(
@@ -48,7 +49,7 @@ export function initMixin(Vue: typeof Component) {
         vm
       )
     }
-    /* istanbul ignore else */
+    // 代理
     if (__DEV__) {
       initProxy(vm)
     } else {
@@ -82,6 +83,8 @@ export function initInternalComponent(
   vm: Component,
   options: InternalComponentOptions
 ) {
+  console.log(options,vm.constructor );
+  
   const opts = (vm.$options = Object.create((vm.constructor as any).options))
   // doing this because it's faster than dynamic enumeration.
   const parentVnode = options._parentVnode

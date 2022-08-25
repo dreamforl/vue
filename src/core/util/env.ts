@@ -52,7 +52,11 @@ export const isServerRendering = () => {
 // detect devtools
 export const devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__
 
-/* istanbul ignore next */
+/**
+ * 检查一个函数是否是原生的
+ * 1 当前是一个函数
+ * 2 当前变量toString带有字符串native code
+ */
 export function isNative(Ctor: any): boolean {
   return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
 }
