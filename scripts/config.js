@@ -118,7 +118,8 @@ const builds = {
   // Runtime+compiler development build (Browser)
   'full-dev': {
     entry: resolve('web/entry-runtime-with-compiler.ts'),
-    dest: resolve('dist/vue.js'),
+    // dest: resolve('dist/vue.js'),
+    dest:path.resolve('C:/Users/10334/Desktop/webpack','src','vue.js'),
     format: 'umd',
     env: 'development',
     alias: { he: './entity-decoder' },
@@ -226,6 +227,7 @@ const builds = {
 }
 
 function genConfig(name) {
+  console.log(name);
   const opts = builds[name]
 
   // console.log('__dir', __dirname)
