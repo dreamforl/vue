@@ -68,24 +68,37 @@ export function initState(vm: Component) {
     initWatch(vm, opts.watch)
   }
 }
-
+// propsOptions:组件中定义的props
 function initProps(vm: Component, propsOptions: Object) {
+  console.log('propsOptions:', propsOptions)
+
   const propsData = vm.$options.propsData || {}
   const props = (vm._props = shallowReactive({}))
-  // cache prop keys so that future props updates can iterate using Array
-  // instead of dynamic object key enumeration.
+  //  缓存键，后续可以通过数组遍历
   const keys: string[] = (vm.$options._propKeys = [])
   const isRoot = !vm.$parent
-  // root instance props should be converted
+  // 根实例上的props 应该被转换
   if (!isRoot) {
     toggleObserving(false)
   }
   for (const key in propsOptions) {
     keys.push(key)
+    /**
+     * 校验props的类型
+     * key:props的名称
+     * propsOptions：props的对应名称的配置（比如类型和初始值）
+     * propsData：实际传递的值
+     */
     const value = validateProp(key, propsOptions, propsData, vm)
     /* istanbul ignore else */
     if (__DEV__) {
+      /**
+       * 将大写字母转化为小写字母和-的形式
+       * eg:LiveHome ---> live-home
+       */
       const hyphenatedKey = hyphenate(key)
+
+      // 检查是否是保留属性
       if (
         isReservedAttribute(hyphenatedKey) ||
         config.isReservedAttr(hyphenatedKey)
