@@ -14,8 +14,7 @@ export interface DepTarget extends DebuggerOptions {
 }
 
 /**
- * A dep is an observable that can have multiple
- * directives subscribing to it.
+ * 观察者
  * @internal
  */
 export default class Dep {

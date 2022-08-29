@@ -83,7 +83,6 @@ export function initInternalComponent(
   vm: Component,
   options: InternalComponentOptions
 ) {
-  console.log(options,vm.constructor );
   
   const opts = (vm.$options = Object.create((vm.constructor as any).options))
   // doing this because it's faster than dynamic enumeration.
