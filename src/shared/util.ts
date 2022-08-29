@@ -125,7 +125,7 @@ export function makeMap(
 export const isBuiltInTag = makeMap('slot,component', true)
 
 /**
- * Check if an attribute is a reserved attribute.
+ * 检查属性是否为保留属性。
  */
 export const isReservedAttribute = makeMap('key,ref,slot,slot-scope,is')
 
@@ -142,7 +142,7 @@ export function remove(arr: Array<any>, item: any): Array<any> | void {
 }
 
 /**
- * Check whether an object has the property.
+ * 判断这个对象是否有这个属性
  */
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export function hasOwn(obj: Object | Array<any>, key: string): boolean {
@@ -176,7 +176,8 @@ export const capitalize = cached((str: string): string => {
 })
 
 /**
- * Hyphenate a camelCase string.
+ * 将大写字母转化为小写字母和-的形式
+ * eg:LiveHome ---> live-home
  */
 const hyphenateRE = /\B([A-Z])/g
 export const hyphenate = cached((str: string): string => {
@@ -359,8 +360,8 @@ export function once<T extends (...args: any[]) => any>(fn: T): T {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#polyfill
 export function hasChanged(x: unknown, y: unknown): boolean {
   if (x === y) {
-    return x === 0 && 1 / x !== 1 / (y as number)
+    return x === 0 && 1 / x !== 1 / (y as number) // 避免+-0的误判
   } else {
-    return x === x || y === y
+    return x === x || y === y // 避免NaN的误判（NaN不等于自身）
   }
 }
