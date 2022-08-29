@@ -54,6 +54,7 @@ export class Observer {
     // this.value = value
     this.dep = mock ? mockDep : new Dep()
     this.vmCount = 0
+    // 将观察者绑定到__ob__属性上面s
     def(value, '__ob__', this)
     if (isArray(value)) {
       if (!mock) {
@@ -98,19 +99,21 @@ export class Observer {
 // helpers
 
 /**
- * Attempt to create an observer instance for a value,
- * returns the new observer if successfully observed,
- * or the existing observer if the value already has one.
+ * 尝试为值创建观察者实例，
+ * 如果成功观察到，则返回新的观察者，
+ * 或者如果该值已经有一个，则使用现有的观察者。
  */
 export function observe(
   value: any,
-  shallow?: boolean,
+  shallow?: boolean, // 是否是浅层的
   ssrMockReactivity?: boolean
 ): Observer | void {
+  // 要观察的值 不是对象，是ref，是Vnode都不执行
   if (!isObject(value) || isRef(value) || value instanceof VNode) {
     return
   }
   let ob: Observer | void
+  // 如果当前对象已经被观察，就直接使用观察observer
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
   } else if (
@@ -137,8 +140,9 @@ export function defineReactive(
   mock?: boolean
 ) {
   const dep = new Dep()
-
+  // 得到对象上的自有属性对应的属性描述符-不用从原型链上查找
   const property = Object.getOwnPropertyDescriptor(obj, key)
+  // 如果不可编辑的话也不执行
   if (property && property.configurable === false) {
     return
   }
@@ -146,6 +150,7 @@ export function defineReactive(
   // cater for pre-defined getter/setters
   const getter = property && property.get
   const setter = property && property.set
+  // 是set的时候，如果val是无初始值的时候或者参数个数为2的时候，设置val为obj[key]
   if (
     (!getter || setter) &&
     (val === NO_INIITIAL_VALUE || arguments.length === 2)
@@ -192,12 +197,14 @@ export function defineReactive(
         // #7981: for accessor properties without setter
         return
       } else if (!shallow && isRef(value) && !isRef(newVal)) {
+        // 兼容ref ，因为ref使用的是data.value来读取值得
         value.value = newVal
         return
       } else {
         val = newVal
       }
       childOb = !shallow && observe(newVal, false, mock)
+      // 依赖变化了，通知
       if (__DEV__) {
         dep.notify({
           type: TriggerOpTypes.SET,
